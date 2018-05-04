@@ -1,93 +1,55 @@
+var Letter = require("./Letter");
 
-// // Contains a constructor, Word that depends on the Letter constructor. This is used to create an object representing 
-// // the current word the user is attempting to guess. That means the constructor should define:
+// The Word constructor is responsible for creating an array of Letter objects and determining if the user guessed every Letter correctly
+function Word(word) {
+  // word.split - splits word into array of letters
+  //     .map - instantiate a new `Letter` for each character and return an array
+	//            referred to with the instance variable, `letters`
+	console.log(word)
+	console.log(this.letters)
+  this.letters = word.split('').map(function(char) {
+    return new Letter(char);
+  });
+}
 
-// // * An array of `new` Letter objects representing the letters of the underlying word
+// prototypes are optional, but will take up less memory than if we defined
+//   each method in the constructor as an instance method
 
-// // * A function that returns a string representing the word. This should call the function on each letter object 
-// // (the first function defined in `Letter.js`) that displays the character or an underscore and concatenate those together.
+// setting the method on the prototype means all instances of Word share this code
+//    but when it is called, `this` refers to that particular instance
+Word.prototype.getSolution = function() {
+  return this.letters.map(function(letter) { // iterate over each letter
+    return letter.getSolution(); // return the solution for each to form an array of solved letters
+  }).join(''); // create a string from the array of solved letters
+}
 
-// // * A function that takes a character as an argument and calls the guess function on each letter object (the second function 
-// //     defined in `Letter.js`) 
+// setting `toString()` as a method lets us concatenate it like we would a string!
+Word.prototype.toString = function() {
+  return this.letters.join(' '); // see Letter.prototype.toString in Letter.js
+};
 
-// var Letter = require("./letter.js");
-// var inquirer = require('inquirer');
+Word.prototype.guessLetter = function(char) {
+  // Checks to see if any of the letters in the array match the user's guess and updates `foundLetter`
+  var foundLetter = false;
+  this.letters.forEach(function(letter) {
+    if (letter.guess(char)) {
+      foundLetter = true;
+    }
+  })
 
-// function Word(currentWord) {
-//     //An array of `new` Letter objects representing the letters of the underlying word
-//     var letterOne = new Letter("a");
-//     this.currentWord = [];
-//     //A function that returns a string representing the word. This should call the 
-//     //function on each letter object (the first function defined in `Letter.js`) 
-//     //that displays the character or an underscore and concatenate those together.
-//     this.revealWord = this.revealChar.toString() 
-//     //A function that takes a character as an argument and calls the guess function 
-//     //on each letter object (the second function defined in `Letter.js`)
-// }
+  // Print the word guessed so far--because we set the method for toString,
+  //  JavaScript will automatically concatenate this even if we don't call toString
+  console.log("\n" + this + "\n");
+  // return whether we found a letter
+  return foundLetter;
+};
 
-// //console.log(new Letter("a"));
-
-var randomWords = require('random-words');
-// Call the letter.js constuctor.
-var Letter = require('./letter.js');
-
-// word.js constructor
-var Word = function(computerWord) {
-
-	this.computerWord = computerWord;
-	this.lettersInWord = [];
-	this.playerWord = '';
-	this.lettersInPlayerWord = [];
-	this.duplicateLetter = true;
-	this.playerGuesses = [];
-	this.wordGuessed = false;
-
-	var self = this;
-
-	// Build an array of all the letters in the guess word. Build an blank array to hold correct player guesses in word.
-	this.getLettersInWord = function(){
-		for(var i=0; i < this.computerWord.length; i++){
-			this.newLetter = new Letter(this.computerWord.substr(i,1));
-			this.newLetter.letterInWord = true;
-			this.lettersInWord.push(this.newLetter.showLetter(this.newLetter.computerWordLetter));
-			this.newLetter.letterInWord = false;
-			this.lettersInPlayerWord.push(this.newLetter.showLetter(this.newLetter.computerWordLetter));
-		}
-		// console.log(computerWord+' '+this.lettersInWord+' '+this.lettersInPlayerWord);
-	};
-
-	// Build player word from the correct player guess array.
-	this.showPlayerWord = function(){
-		this.playerWord = (this.lettersInPlayerWord.toString()).replace(/,/g, "");
-		// return this.playerWord;
-	};
-
-	// Check guess letter to see if its in the guess word.
-	this.checkLetter = function(letterGuess){
-		// Set duplicate flag to true.
-		this.duplicateLetter = true;
-		// Loop thru all letters in the guess word.
-		for(var i = 0; i < this.computerWord.length; i++){
-			// Check to see if letter quessed previously. If not push into array of letters guessed. Reset duplicate flag to false.
-			if(this.playerGuesses.indexOf(letterGuess) == -1){
-				this.playerGuesses.push(letterGuess);
-				console.log('i '+this.playerGuesses);
-				this.duplicateLetter = false;
-			}
-			// Check to see if guess letter in quess word.
-			if(this.lettersInWord[i] == letterGuess){
-				this.lettersInPlayerWord[i] = letterGuess;
-			}
-		}
-	};
-
-	// Check to see if player quess word equals guess word
-	this.checkWord = function(){
-		if(this.playerWord == this.computerWord){
-			this.wordGuessed = true;
-		}
-	};
-
+// Returns true if all letters in the word have been guessed
+Word.prototype.guessedCorrectly = function() {
+  // The `every` method returns true if the callback function returns true for every element in the array
+  return this.letters.every(function(letter) {
+    return letter.visible;
+  });
 };
 
 module.exports = Word;
