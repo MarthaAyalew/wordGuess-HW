@@ -4,10 +4,8 @@ var Letter = require("./Letter");
 function Word(word) {
   // word.split - splits word into array of letters
   //     .map - instantiate a new `Letter` for each character and return an array
-	//            referred to with the instance variable, `letters`
-	console.log(word)
-	console.log(this.letters)
-  this.letters = word.split('').map(function(char) {
+  //            referred to with the instance variable, `letters`
+  this.letters = word.split("").map(function(char) {
     return new Letter(char);
   });
 }
@@ -35,7 +33,7 @@ Word.prototype.guessLetter = function(char) {
     if (letter.guess(char)) {
       foundLetter = true;
     }
-  })
+  });
 
   // Print the word guessed so far--because we set the method for toString,
   //  JavaScript will automatically concatenate this even if we don't call toString

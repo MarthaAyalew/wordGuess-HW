@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MarthaAyalew/wordGuess-HW#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "inquirer": "^5.2.0",
     "random-words": "^1.1.0"
   }

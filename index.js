@@ -5,3 +5,4 @@ var game = new Game();
 
 // Start playing
 game.play();
+

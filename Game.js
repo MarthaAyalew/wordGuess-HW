@@ -1,11 +1,16 @@
-var inquirer = require('inquirer');
-var randomWords = require('random-words');
-console.log(randomWords());
+var inquirer = require("inquirer");
+var chalk = require("chalk");
 var Word = require("./Word");
+// var words = require("./words");
+var randomWords = require('random-words');
 
-function Game(){
-    var self=this;
-    // Sets the guesses to 10 and gets the next word
+// The Game constructor is responsible for keeping score and controlling the flow of the overall game
+
+function Game() {
+  // Save a reference for `this` in `self` as `this` will change inside of inquirer
+  var self = this;
+
+  // Sets the guesses to 10 and gets the next word
   this.play = function() {
     this.guessesLeft = 10;
     this.nextWord();
@@ -13,8 +18,8 @@ function Game(){
 
   // Creates a new Word object using a random word from the array, asks the user for their guess
   this.nextWord = function() {
-    var randWord = randomWords;
-    console.log("17"+randWord)
+     var randWord = randomWords();
+     console.log(randWord)
     this.currentWord = new Word(randWord);
     console.log('\n' + this.currentWord + '\n');
     this.makeGuess();
@@ -104,5 +109,3 @@ function Game(){
 }
 
 module.exports = Game;
-
-
